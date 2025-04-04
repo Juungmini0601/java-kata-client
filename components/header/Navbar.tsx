@@ -9,10 +9,12 @@ export default function Navbar() {
             <div className='container mx-auto h-full flex items-center justify-between px-10 py-5'>
                 <Logo className='cursor-pointer'/>
                 <div className='flex items-center gap-4'>
+                    {/* TODO Navigation */}
                     <Button className='cursor-pointer' variant='outline'>
                         <LogIn/>
                         로그인
                     </Button>
+                    {/* TODO Navigation */}
                     <Button className='cursor-pointer hover:secondary'>
                         학습하기
                     </Button>
