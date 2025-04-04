@@ -1,10 +1,22 @@
-import {Button} from "@/components/ui/button";
+import Navbar from "@/components/header/Navbar";
+import Hero from "@/components/hero/Hero";
+import {FeatureCards} from "@/components/featureCard/FeatureCard";
+import TestimonialSection from "@/components/testimonialSection/TestimoniaSection";
+import CallToActionSection from "@/components/callToActionSection/CallToActionSection";
+import Footer from "@/components/footer/Footer";
 
 export default function IndexPage() {
-  return (
-      <>
-        <h1>인덱스 페이지</h1>
-        <Button>버튼</Button>
-      </>
-  );
+    return (
+        <div className='min-h-screen flex flex-col'>
+            <Navbar/>
+            {/* Padding Top Fixed Navbar */}
+            <main className='flex-grow pt-16'>
+                <Hero/>
+                <FeatureCards/>
+                <TestimonialSection/>
+                <CallToActionSection/>
+            </main>
+            <Footer/>
+        </div>
+    );
 }
