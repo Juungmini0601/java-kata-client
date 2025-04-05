@@ -3,40 +3,47 @@
 
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Lock, Mail} from "lucide-react";
-import {useState} from "react";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
-import {signinAPI} from "@/lib/api/auth";
 import {useRouter} from "next/navigation";
 import IconInput from "@/components/form/IconInput";
+import {useForm} from "react-hook-form";
+import {SigninFormData, signinSchema} from "@/lib/validations";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {signinAPI} from "@/lib/api/auth";
+import {useModalStore} from "@/stores/useModalStore";
+
 
 export default function SigninPage() {
     const router = useRouter();
-    // Form State
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    // Button State
-    const [loadding, setLoadding] = useState(false);
+    // FormState
+    const {
+        register,
+        handleSubmit,
+        formState: {errors, isSubmitting}
+    } = useForm<SigninFormData>({
+        resolver: zodResolver(signinSchema)
+    });
 
-    const handleSignin = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setLoadding(true);
-
+    const onSubmit = async (formData: SigninFormData) => {
+        const {email, password} = formData;
         const {result, data, error} = await signinAPI(email, password);
+
         if (result === 'SUCCESS') {
             localStorage.setItem('accessToken', data.accessToken);
             localStorage.setItem('refreshToken', data.refreshToken);
 
             router.push('/');
         } else {
-            // TODO 예외 조금 더 개선
             if (error) {
-                alert(error.message);
+                if (error.code === 'E401' || error.code === 'E400') {
+                    useModalStore.getState().openModal('ERROR', '이메일과 비밀번호를 다시 확인 해주세요.')
+                } else if (error.code === 'E500') {
+                    useModalStore.getState().openModal('ERROR', '관리자에게 문의 해주세요.')
+                }
             }
         }
-
-        setLoadding(false);
     }
 
     return (
@@ -50,26 +57,24 @@ export default function SigninPage() {
                     <p className='text-sm text-gray-500 mt-1'>로그인하고 알고리즘 문제를 만나보세요!</p>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSignin} className='space-y-4'>
+                    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
                         <IconInput
-                            type="email"
                             placeholder="이메일을 입력하세요."
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
                             icon={<Mail size={18}/>}
-                            required
+                            {...register("email", {required: "이메일은 필수 입니다."})}
                         />
+                        {errors.email && <p className='text-sm text-red-500'>{errors.email.message}</p>}
                         <IconInput
-                            type="password"
+                            type='password'
                             placeholder="비밀번호를 입력하세요."
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
                             icon={<Lock size={18}/>}
-                            required
+                            {...register("password", {required: "비밀번호는 필수 입니다."})}
                         />
+                        {errors.password && <p className='text-sm text-red-500'>{errors.password.message}</p>}
+
                         <Button type='submit'
-                                className={cn("w-full cursor-pointer", loadding && 'opacity-75')}
-                                disabled={loadding}>
+                                className={cn("w-full cursor-pointer", isSubmitting && 'opacity-75')}
+                                disabled={isSubmitting}>
                             로그인
                         </Button>
                     </form>
