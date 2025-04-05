@@ -13,6 +13,7 @@ import {SigninFormData, signinSchema} from "@/lib/validations";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {signinAPI} from "@/lib/api/auth";
 import {useModalStore} from "@/stores/useModalStore";
+import {setToken} from "@/lib/localStorage";
 
 
 export default function SigninPage() {
@@ -31,9 +32,7 @@ export default function SigninPage() {
         const {result, data, error} = await signinAPI(email, password);
 
         if (result === 'SUCCESS') {
-            localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('refreshToken', data.refreshToken);
-
+            setToken(data.accessToken, data.refreshToken);
             router.push('/');
         } else {
             if (error) {
