@@ -1,5 +1,5 @@
 import {api} from "@/lib/api/api";
-import {AuthResponse, AuthUserResponse} from "@/types/auth";
+import {AuthResponse, AuthUserResponse, CreateUserResponse} from "@/types/auth";
 
 // /api/v1/auth/token
 export async function signinAPI(email: string, password: string): Promise<AuthResponse> {
@@ -12,7 +12,12 @@ export async function signinAPI(email: string, password: string): Promise<AuthRe
     }
 
     const response = await api.post('/api/v1/auth/token', {email, password})
-    console.log(response)
+
+    return response.json();
+}
+
+export async function signupAPI(email: string, password: string, nickname: string): Promise<CreateUserResponse> {
+    const response = await api.post('/api/v1/users', {email, password, nickname})
 
     return response.json();
 }

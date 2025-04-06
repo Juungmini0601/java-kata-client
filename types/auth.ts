@@ -7,13 +7,19 @@ interface AuthData {
 
 export type AuthResponse = ApiResponse<AuthData>;
 
-export interface AuthUserData {
+export interface UserData {
     id: number,
     email: string,
     nickname: string,
     role: string,
     createdAt: string,
     updatedAt?: string
+}
+
+export type CreateUserResponse = ApiResponse<UserData>;
+
+// eslint-disable-next-line
+export interface AuthUserData extends UserData {
 }
 
 export type AuthUserResponse = ApiResponse<AuthUserData>;
