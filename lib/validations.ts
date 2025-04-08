@@ -26,3 +26,9 @@ export const signupSchema = z.object({
 })
 
 export type SignupFormData = z.infer<typeof signupSchema>;
+
+export const categoryFormSchema = z.object({
+    categoryName: z.string().min(2, '카테고리는 최소 2글자 이상이어야 합니다.').max(10, '카테고리는 최대 10글자까지 가능합니다.')
+});
+
+export type CategoryFormData = z.infer<typeof categoryFormSchema>;

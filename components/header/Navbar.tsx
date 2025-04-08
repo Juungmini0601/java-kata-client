@@ -39,6 +39,21 @@ export default function Navbar() {
                             </Button>
                         </Link>)}
 
+                    {/* user의 role이 admin이면 카테고리 관리 페이지 링크 보여주기 */}
+                    {user?.role === 'ROLE_ADMIN' && (
+                        <ul className='flex gap-4'>
+                            <li>
+                                <Link href={'/admin/categories'}>
+                                    카테고리 관리
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href={'/admin/problems'}>
+                                    문제 관리
+                                </Link>
+                            </li>
+                        </ul>
+                    )}
                     {/* TODO Navigation */}
                     <Button className='cursor-pointer hover:secondary'>
                         학습하기
